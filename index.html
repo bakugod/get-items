@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tested</title>
+    <style type="text/css">
+        .container{
+            width: 500px;
+            margin: 0 auto;
+        }
+        .item{
+            display: block;
+            width: fit-content;
+            padding: 4px;
+            margin: 1px;
+            border: 1px solid #e6e6e6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <div class="container">
+        <article class="info">
+            <strong>Server Stats</strong><br>
+            RSS: <div></div><br>
+            Heap total: <div id='heapTotal'></div><br>
+            Heap used: <div id='heapUsed'></div><br>
+            <strong>String</strong><br>
+
+
+            <div class="str" v-for="item in array">
+                <span class="item">{{ item }}</span><br>
+                <!-- <span v-for="item in array" class="item">{{ item }}</span><br> -->
+            </div>
+        </article>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+     
+<script>
+const ws = new WebSocket("ws://localhost:8081");
+
+const App = new Vue({
+   el   : ".info",
+   data : {
+      array  : []
+   },
+    mounted(){
+        ws.onmessage = (event) => {
+            this.updateString(JSON.parse(event.data));
+            console.log(this.updateStats(JSON.parse(event.data)))
+        };
+   },
+   methods : {
+        updateString(content){
+            this.array.push(content.string);
+            this.array.sort();
+        },
+        updateStats(content){
+            return content.memory; 
+        }
+   },
+});
+</script>
+</body>
+</html>
