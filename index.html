@@ -50,19 +50,32 @@ const App = new Vue({
     mounted(){
         ws.onmessage = (event) => {
             this.updateString(JSON.parse(event.data));
+            this.sortArray(this.array);
             console.log(this.updateStats(JSON.parse(event.data)))
         };
    },
    methods : {
+        sortArray(array){
+                let n = array.length; 
+                for (let i = 0; i < n; i++) { 
+                    let v = array[i], j = i-1;
+                while (j >= 0 && array[j] > v) {
+                    array[j + 1] = array[j]; j--; } 
+                    array[j + 1] = v; 
+                } 
+                return array; 
+        },
         updateString(content){
             this.array.push(content.string);
-            this.array.sort();
         },
         updateStats(content){
             return content.memory; 
         }
    },
 });
+
+
 </script>
 </body>
 </html>
+
